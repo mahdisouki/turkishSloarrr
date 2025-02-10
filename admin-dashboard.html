@@ -9,10 +9,61 @@
     <style>
         .sidebar {
             min-height: 100vh;
-            background-color: #f8f9fa;
+            background-color: #f9f2c9 !important;
+        }
+        .nav-link {
+            color: #4d411c;
+            font-weight: bold;
+            
+        }
+        .nav-link.active {
+            background-color: #f1bf2a;
+            color: white !important;
+        }
+        main > div {
+            display: none;
+        }
+        body{
+            background-color: #f8f7ee;
+        }
+        .form-control:focus {
+            border-color: #fcc82c;
+            box-shadow: 0 0 12px rgba(252, 200, 44, 0.7);
+        }
+        button{
+            background-color: #f1bf2a;
+        }
+        .custom-file-input {
+            position: relative;
+            width: 100%;
+            height: 45px;
+            opacity: 0;
+            z-index: 2;
+        }
+        .custom-file-label {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            padding: 10px 15px;
+            background-color: #fff;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .custom-file-label::after {
+            content: 'Browse';
+            background-color: #007bff;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            margin-left: 10px;
         }
     </style>
-    <script src="./assets/config.js"></script>
 </head>
 <body>
     <div class="container-fluid">
@@ -21,25 +72,20 @@
                 <div class="position-sticky pt-3">
                     <ul class="nav flex-column">
                         <li class="nav-item">
-                            <a class="nav-link active" href="#" id="blogLink">
+                            <a class="nav-link active" href="#blogSection">
                                 <i class="fas fa-blog"></i> Blog Posts
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#" id="serviceLink">
+                            <a class="nav-link" href="#serviceSection">
                                 <i class="fas fa-cogs"></i> Services
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#" id="settingsLink">
-                                <i class="fas fa-user-cog"></i> Settings
+                        <!-- <li class="nav-item">
+                            <a class="nav-link" href="#settingsSection">
+                                <i class="fas fa-cogs"></i> Settings
                             </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#" id="logoutLink">
-                                <i class="fas fa-sign-out-alt"></i> Logout
-                            </a>
-                        </li>
+                        </li> -->
                     </ul>
                 </div>
             </nav>
@@ -49,181 +95,210 @@
                     <h1 class="h2">Admin Dashboard</h1>
                 </div>
 
-                <!-- Blog Post Section -->
+                <!-- Blog Section -->
                 <div id="blogSection">
-                    <h2>Create a New Blog Post</h2>
-                    <form id="blogForm" enctype="multipart/form-data">
+                    
+                    <h3>Add New Blog Post</h3>
+                    <form id="addBlogForm" enctype="multipart/form-data">
                         <div class="mb-3">
-                            <label for="title" class="form-label">Title</label>
-                            <input type="text" class="form-control" id="title" name="title" required>
+                            <label for="blogTitle" class="form-label">Title</label>
+                            <input type="text" class="form-control" id="blogTitle" name="title" required>
                         </div>
                         <div class="mb-3">
-                            <label for="author" class="form-label">Author</label>
-                            <input type="text" class="form-control" id="author" name="author" required>
+                            <label for="blogAuthor" class="form-label">Author</label>
+                            <input type="text" class="form-control" id="blogAuthor" name="author" required>
                         </div>
                         <div class="mb-3">
-                            <label for="content" class="form-label">Content</label>
-                            <textarea class="form-control" id="content" name="content" rows="6" required></textarea>
+                            <label for="blogContent" class="form-label">Content</label>
+                            <textarea class="form-control" id="blogContent" name="content" rows="6" required></textarea>
                         </div>
                         <div class="mb-3">
-                            <label for="mainImage" class="form-label">Main Image</label>
+                            <label for="mainImage"  class="form-label">Main Image</label>
                             <input type="file" class="form-control" id="mainImage" name="mainImage" accept="image/*" required>
                         </div>
                         <div class="mb-3">
                             <label for="images" class="form-label">Additional Images</label>
                             <input type="file" class="form-control" id="images" name="images" accept="image/*" multiple>
                         </div>
-                        <button type="submit" class="btn btn-primary">Submit Post</button>
+                        <button type="submit" class="btn btn-warning">Add Blog</button>
                     </form>
+
+                    <h3 class="mt-4">Existing Blogs</h3>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Author</th>
+                                <th>Content</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="blogTable">
+                            <!-- Blog data will be populated here -->
+                        </tbody>
+                    </table>
                 </div>
 
-<!-- Service Section -->
-<div id="serviceSection" style="display: none;">
-    <h2>Create a New Service</h2>
-    <form id="serviceForm" enctype="multipart/form-data">
-        <div class="mb-3">
-            <label for="serviceTitle" class="form-label">Service Title</label>
-            <input type="text" class="form-control" id="serviceTitle" name="title" required>
-        </div>
-        <div class="mb-3">
-            <label for="serviceDescription" class="form-label">Service Description</label>
-            <textarea class="form-control" id="serviceDescription" name="description" rows="4" required></textarea>
-        </div>
-        <div class="mb-3">
-            <label for="serviceImage" class="form-label">
-                <i class="fas fa-image"></i> Main Image
-            </label>
-            <input type="file" class="form-control" id="serviceImage" name="mainImage" accept="image/*" required>
-        </div>
-        <div class="mb-3">
-            <label for="serviceIcon" class="form-label">
-                <i class="fas fa-cog"></i> Service Icon
-            </label>
-            <input type="file" class="form-control" id="serviceIcon" name="icon" accept="image/*" required>
-        </div>
-        <div class="mb-3">
-            <label for="serviceImages" class="form-label">
-                <i class="fas fa-images"></i> Additional Images
-            </label>
-            <input type="file" class="form-control" id="serviceImages" name="images" accept="image/*" multiple>
-        </div>
-        <button type="submit" class="btn btn-primary">Submit Service</button>
-    </form>
-</div>
+                <!-- Service Section -->
+                <div id="serviceSection">
+                    
+                    <h3>Add New Service</h3>
+                    <form id="addServiceForm" enctype="multipart/form-data">
+                        <div class="mb-3">
+                            <label for="serviceTitle" class="form-label">Title</label>
+                            <input type="text" class="form-control" id="serviceTitle" name="title" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="serviceDescription" class="form-label">Description</label>
+                            <textarea class="form-control" id="serviceDescription" name="description" rows="6" required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="serviceIcon" class="form-label">Icon</label>
+                            <input type="file" class="form-control" id="serviceIcon" name="icon" accept="image/*">
+                        </div>
+                        <div class="mb-3">
+                            <label for="serviceMainImage" class="form-label">Main Image</label>
+                            <input type="file" class="form-control" id="serviceMainImage" name="mainImage" accept="image/*" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="serviceImages" class="form-label">Additional Images</label>
+                            <input type="file" class="form-control" id="serviceImages" name="images" accept="image/*" multiple>
+                        </div>
+                        <button type="submit" class="btn btn-warning">Add Service</button>
+                    </form>
 
-
+                    <h3 class="mt-4">Existing Services</h3>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Description</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="serviceTable">
+                            <!-- Service data will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
 
                 <!-- Settings Section -->
-                <div id="settingsSection" style="display: none;">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <h3>Change Password</h3>
-                            <form id="changePasswordForm">
-                                <div class="mb-3">
-                                    <label for="currentPassword" class="form-label">Current Password</label>
-                                    <input type="password" class="form-control" id="currentPassword" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="newPassword" class="form-label">New Password</label>
-                                    <input type="password" class="form-control" id="newPassword" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="confirmPassword" class="form-label">Confirm New Password</label>
-                                    <input type="password" class="form-control" id="confirmPassword" required>
-                                </div>
-                                <button type="submit" class="btn btn-primary">Change Password</button>
-                            </form>
-                        </div>
-                        <div class="col-md-6">
-                            <h3>Change Email</h3>
-                            <form id="changeEmailForm">
-                                <div class="mb-3">
-                                    <label for="currentPasswordEmail" class="form-label">Current Password</label>
-                                    <input type="password" class="form-control" id="currentPasswordEmail" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="newEmail" class="form-label">New Email</label>
-                                    <input type="email" class="form-control" id="newEmail" required>
-                                </div>
-                                <button type="submit" class="btn btn-primary">Change Email</button>
-                            </form>
-                        </div>
-                    </div>
+                <div id="settingsSection">
+                    <h2>Settings</h2>
+                    <p>Settings content goes here.</p>
                 </div>
             </main>
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Navigation
-        document.getElementById('blogLink').addEventListener('click', showSection);
-        document.getElementById('serviceLink').addEventListener('click', showSection);
-        document.getElementById('settingsLink').addEventListener('click', showSection);
+        const links = document.querySelectorAll('.nav-link');
 
-        function showSection(e) {
+        links.forEach(link => {
+            link.addEventListener('click', (event) => {
+                event.preventDefault();
+                links.forEach(l => l.classList.remove('active'));
+                link.classList.add('active');
+                const sectionId = link.getAttribute('href').substring(1);
+                document.querySelectorAll('main > div').forEach(section => section.style.display = 'none');
+                document.getElementById(sectionId).style.display = 'block';
+            });
+        });
+
+        document.getElementById('addBlogForm').addEventListener('submit', async function(e) {
             e.preventDefault();
-            const sections = ['blogSection', 'serviceSection', 'settingsSection'];
-            sections.forEach(section => {
-                document.getElementById(section).style.display = 
-                    section === e.target.id.replace('Link', 'Section') ? 'block' : 'none';
+            const formData = new FormData(e.target);
+
+            try {
+                const response = await fetch('http://localhost:5000/api/blogs', {
+                    method: 'POST',
+                    body: formData
+                });
+                if (response.ok) {
+                    alert('Blog added successfully!');
+                    fetchBlogs();
+                }
+            } catch (error) {
+                console.error('Error adding blog:', error);
+            }
+        });
+
+        document.getElementById('addServiceForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+
+            try {
+                const response = await fetch('http://localhost:5000/api/services', {
+                    method: 'POST',
+                    body: formData
+                });
+                if (response.ok) {
+                    alert('Service added successfully!');
+                    fetchServices();
+                }
+            } catch (error) {
+                console.error('Error adding service:', error);
+            }
+        });
+
+        async function fetchBlogs() {
+            const response = await fetch('http://localhost:5000/api/blogs');
+            const blogs = await response.json();
+            const table = document.getElementById('blogTable');
+            table.innerHTML = '';
+            blogs.forEach(blog => {
+                const row = `<tr><td>${blog.title}</td><td>${blog.author}</td><td>${blog.content}</td><td><button class="btn btn-danger btn-sm" onclick="deleteBlog('${blog._id}')">Delete</button></td></tr>`;
+                table.innerHTML += row;
             });
         }
 
-        // Handling blog form submission
-        document.getElementById('blogForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            const formData = new FormData(e.target);
-            
+        async function fetchServices() {
+            const response = await fetch('http://localhost:5000/api/services');
+            const services = await response.json();
+            const table = document.getElementById('serviceTable');
+            table.innerHTML = '';
+            services.forEach(service => {
+                const row = `<tr><td>${service.title}</td><td>${service.description}</td><td><button class="btn btn-danger btn-sm" onclick="deleteService('${service._id}')">Delete</button></td></tr>`;
+                table.innerHTML += row;
+            });
+        }
+        async function deleteBlog(id) {
             try {
-               
-                const response = await fetch( `${baseUrl}/api/blogs`, {
-                    method: 'POST',
-                    body: formData,
-                    headers: {
-                        'Authorization': 'Bearer ' + localStorage.getItem('token')
-                    }
+                const response = await fetch(`http://localhost:5000/api/blogs/${id}`, {
+                    method: 'DELETE'
                 });
-
                 if (response.ok) {
-                    alert('Blog post created successfully!');
-                    window.location.href = '/our-blog.html';
-                } else {
-                    throw new Error('Error creating blog post');
+                    alert('Blog deleted successfully!');
+                    fetchBlogs();
                 }
             } catch (error) {
-                console.error('Error creating blog post:', error);
-                alert('Error creating blog post. Please try again.');
+                console.error('Error deleting blog:', error);
             }
-        });
+        }
 
-        // Handling service form submission
-        document.getElementById('serviceForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            const formData = new FormData(e.target);
-            
+        async function deleteService(id) {
             try {
-                const response = await fetch(`${baseUrl}/api/services`, {
-                    method: 'POST',
-                    body: formData,
-                    headers: {
-                        'Authorization': 'Bearer ' + localStorage.getItem('token')
-                    }
+                const response = await fetch(`http://localhost:5000/api/services/${id}`, {
+                    method: 'DELETE'
                 });
-
                 if (response.ok) {
-                    alert('Service created successfully!');
-                    window.location.href = '/our-services.html';
-                } else {
-                    throw new Error('Error creating service');
+                    alert('Service deleted successfully!');
+                    fetchServices();
                 }
             } catch (error) {
-                console.error('Error creating service:', error);
-                alert('Error creating service. Please try again.');
+                console.error('Error deleting service:', error);
             }
-        });
+        }
+        function deleteRow(button) {
+            const row = button.parentNode.parentNode;
+            row.parentNode.removeChild(row);
+        }
+
+        window.onload = () => {
+            document.getElementById('blogSection').style.display = 'block';
+            fetchBlogs();
+            fetchServices();
+        };
     </script>
 </body>
 </html>
